@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/helloFragment">
+
+    <fragment
+        android:id="@+id/addSection"
+        android:name="by.tms.myhandbook.View.UI.addSection"
+        android:label="add_section_fragment"
+        tools:layout="@layout/add_section_fragment" />
+    <fragment
+        android:id="@+id/referencesFragment"
+        android:name="by.tms.myhandbook.View.UI.ReferencesFragment"
+        android:label="references_fragment"
+        tools:layout="@layout/references_fragment" >
+        <action
+            android:id="@+id/action_referencesFragment_to_addSection"
+            app:destination="@id/addSection" />
+    </fragment>
+    <fragment
+        android:id="@+id/helloFragment"
+        android:name="by.tms.myhandbook.View.UI.HelloFragment"
+        android:label="fragment_hello"
+        tools:layout="@layout/fragment_hello" />
+    <fragment
+        android:id="@+id/addRefFragment"
+        android:name="by.tms.myhandbook.View.UI.AddRefFragment"
+        android:label="fragment_add_ref"
+        tools:layout="@layout/fragment_add_ref" />
+    <fragment
+        android:id="@+id/sectionFragment"
+        android:name="by.tms.myhandbook.SectionFragment"
+        android:label="fragment_section"
+        tools:layout="@layout/fragment_section" />
+
+</navigation>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+<!--    <group android:checkableBehavior="single"-->
+<!--        android:id="@+id/group1">-->
+<!--&lt;!&ndash;        <item android:title="NewReferences"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/referencesFragment"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:icon="@drawable/ic_test"&ndash;&gt;-->
+<!--&lt;!&ndash;            />&ndash;&gt;-->
+<!--&lt;!&ndash;        <item android:title="Apply"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/addSection"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:icon="@drawable/ic_test"&ndash;&gt;-->
+<!--&lt;!&ndash;            />&ndash;&gt;-->
+<!--    </group>-->
+    <group android:checkableBehavior="single"
+        android:id="@+id/group123">
+
+    </group>
+</menu>
