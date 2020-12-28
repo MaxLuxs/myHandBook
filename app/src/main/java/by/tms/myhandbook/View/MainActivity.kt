@@ -26,6 +26,11 @@ import by.tms.myhandbook.View.UI.ReferencesViewModel
 import by.tms.myhandbook.ViewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
+/**
+ * MyHandbook v 0.01
+ * by Maksim Lukashevich
+ * It`s dirty but it can live
+ * */
 
 class MainActivity : AppCompatActivity(){
 
@@ -35,17 +40,31 @@ class MainActivity : AppCompatActivity(){
 
     var itemid = 0
 
-    val database by lazy { Room.databaseBuilder(
-        applicationContext,
-        HandbookDatabase::class.java, "handb_db"
-    ).allowMainThreadQueries().build() }
+    private lateinit var database: HandbookDatabase
 
-    @RequiresApi(Build.VERSION_CODES.P)
+//    val database by lazy { Room.databaseBuilder(
+//        applicationContext,
+//        HandbookDatabase::class.java, "handb_db"
+//    ).allowMainThreadQueries().build() }
+
+//    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
+
+    //database init:
+//    database = Room.databaseBuilder(
+//        applicationContext,
+//        HandbookDatabase::class.java,
+//        "handb_db",
+//    ).allowMainThreadQueries().build()
+    database = Room.databaseBuilder(
+        applicationContext,
+        HandbookDatabase::class.java, "handook_db"
+    ).allowMainThreadQueries()
+        .build()
 
         //
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
@@ -68,7 +87,7 @@ class MainActivity : AppCompatActivity(){
 
         /**ОЛбработка нажатий кнопок в меню дравера :
          * add -> добавить item в menu
-         * delte -> удалить item из меню
+         * delete -> удалить item из меню
          * */
         add.setOnClickListener(View.OnClickListener {
             Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
@@ -77,12 +96,14 @@ class MainActivity : AppCompatActivity(){
             nav_view.menu.setQwertyMode(true)
             nav_view.menu.setGroupCheckable(R.id.group123, true, true)
 //            nav_view.menu.setGroupDividerEnabled(true)
+            //AddDB:
+            database.referencesDao().insertReferences(References(mutableListOf<Section>(),itemid, "Ref $itemid"))
             viewModel.refList.value!!.add(References(mutableListOf<Section>(),itemid, "Ref $itemid"))
             Log.e("!!!", viewModel.refList.value!![itemid].sections.toString())
             itemid = viewModel.refList.value!!.size
             nav_view.setNavigationItemSelectedListener {
                 refViewModel.list.value = viewModel.refList.value!![it.itemId].sections
-                refViewModel.referencesId=0
+                refViewModel.referencesId = 0
                 navController.navigate(R.id.referencesFragment)
                 it.isChecked = true;
                 drawer.closeDrawers();

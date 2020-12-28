@@ -64,14 +64,13 @@ class ReferencesFragment(/*val database: HandbookDatabase*/) : Fragment() {
             navController.navigate(R.id.addSection)
 //---            database.sectionDao().insertSection(sectionList.last())
             adapter.reload()
-            Log.e("!!!", viewModel.list.value.toString() + "Vot eto ne pokazivaet")
 
 
         viewModel.list.observe(viewLifecycleOwner, Observer {
-            adapter.reload()
+//            adapter.reload()
+//            Snackbar.make(view, "Добавлена новая скция", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
         })
-            Snackbar.make(view, "Добавлена новая скция", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
         }
     }
 

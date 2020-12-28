@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.fragment_section.*
 
 /**
  * A simple [Fragment] subclass.
- * Use the [SectionFragment.newInstance] factory method to
- * create an instance of this fragment.
  */
 class SectionFragment : Fragment() {
     lateinit var sectionViewModel: SectionViewModel
