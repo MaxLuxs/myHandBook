@@ -25,7 +25,7 @@ data class Section(
     var name: String,
     var theme: String,
     var text: String,
-    val idReferences:Int
+    val refId:Int
 )
 
 //Database:-----------------------------------------------------------------------
@@ -35,23 +35,23 @@ data class Section(
 //}
 
 //DAO:-----------------------------------------------------------------------
-@Dao
-interface SectionDao {
-    @Query("INSERT INTO section (name) VALUES ('New section')")
-    fun create()
-    @get:Query("SELECT * FROM section")
-    val getAll: MutableList<Section>?
-    @Query("UPDATE section SET name = :content WHERE id = :id")
-    fun save(content: String?, id: Int)
-    @Query("DELETE FROM section WHERE id LIKE :id")
-    fun delete(id: Int)
-    @Query("DELETE from section")
-    fun deleteAll()
-    @Insert
-    fun insertSection(newSection: Section)
-    @Delete
-    fun deleteSection(section: Section)
-}
+//@Dao
+//interface SectionDao {
+//    @Query("INSERT INTO section (name) VALUES ('New section')")
+//    fun create()
+//    @get:Query("SELECT * FROM section")
+//    val getAll: MutableList<Section>?
+//    @Query("UPDATE section SET name = :content WHERE id = :id")
+//    fun save(content: String?, id: Int)
+//    @Query("DELETE FROM section WHERE id LIKE :id")
+//    fun delete(id: Int)
+//    @Query("DELETE from section")
+//    fun deleteAll()
+//    @Insert
+//    fun insertSection(newSection: Section)
+//    @Delete
+//    fun deleteSection(section: Section)
+//}
 //Adapter:------------------------------------------------------------------------------------------------------------------
 class SectionAdapter(private var sectionList: MutableList<Section>, val navController: NavController, val mainActivity: MainActivity) : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
 

@@ -10,14 +10,14 @@ data class References(
         val id:Int,
         val ReferencesName:String)
 
-@Dao
-interface ReferencesDao{
-    @Query("SELECT * FROM refs")
-    fun getAllRef():List<References>
-    @Insert
-    fun insertRef(ref:References)
-    @Delete
-    fun deleteRef(ref:References)
-    @Query("DELETE FROM refs")
-    fun deleteAll()
-}
+//@Dao
+//interface ReferencesDao{
+//    @Query("SELECT * FROM refs")
+//    fun getAllRef():List<References>
+//    @Insert
+//    fun insertRef(ref:References)
+//    @Delete
+//    fun deleteRef(ref:References)
+//    @Query("DELETE FROM refs")
+//    fun deleteAll()
+//}
