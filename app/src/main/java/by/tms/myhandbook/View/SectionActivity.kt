@@ -37,12 +37,12 @@ class SectionActivity(private val mainActivity: MainActivity) : AppCompatActivit
 
     override fun onPause() {
         super.onPause()
-        mainActivity.database.sectionDao().delete(intent.getIntExtra("id", 1))
-        mainActivity.database.sectionDao().insertSection(Section(intent.getIntExtra("id", 1),textEd1.text.toString(), textEd2.text.toString(), textEd3.text.toString()))
-
-        intent.putExtra("name", textEd1.text.toString())
-        intent.putExtra("theme", textEd2.text.toString())
-        intent.putExtra("content", textEd3.text.toString())
+////        mainActivity.database.referencesDao().delete(intent.getIntExtra("id", 1))
+////        mainActivity.database.referencesDao().insertSection(Section(intent.getIntExtra("id", 1),textEd1.text.toString(), textEd2.text.toString(), textEd3.text.toString()))
+//
+//        intent.putExtra("name", textEd1.text.toString())
+//        intent.putExtra("theme", textEd2.text.toString())
+//        intent.putExtra("content", textEd3.text.toString())
     }
 
 }

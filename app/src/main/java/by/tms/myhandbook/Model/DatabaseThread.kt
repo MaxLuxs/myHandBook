@@ -8,7 +8,7 @@ class DatabaseThread(val database: HandbookDatabase) {
 
         override fun run() {
             super.run()
-            database.sectionDao().insertSection(section)
+            database.referencesDao().insertSection(section)
         }
     }
 
@@ -25,7 +25,7 @@ class DatabaseThread(val database: HandbookDatabase) {
     inner class DeleteAllSections():Thread(){
         override fun run() {
             super.run()
-            database.sectionDao().deleteAll()
+            database.referencesDao().deleteAllSections()
         }
     }
 
