@@ -68,42 +68,57 @@ class MainActivity : AppCompatActivity(){
 
         //db load:
         viewModel.refAndSecList.value = database.referencesDao().getAllRefs()
-    Log.e("!!!", viewModel.refAndSecList.value.toString())
-    viewModel.refList.value = mutableListOf()
-    viewModel.secList.value = mutableListOf()
+
+        viewModel.refList.value = mutableListOf()
+        viewModel.secList.value = mutableListOf()
 
         viewModel.refAndSecList.observe(this, Observer {
+            nav_view.menu.clear()
             viewModel.itemid = viewModel.refAndSecList.value!!.size
             itemid = viewModel.itemid
             Log.e("!!!", itemid.toString())
-            var i = 0
-            for (ras in it){
-                Log.e("!!!", "1")
-
-                viewModel.secList.value = ras.sections
+            for ((i, ras) in it.withIndex()){
+//                viewModel.secList.value = ras.sections
                 viewModel.refList.value?.add(ras.references)
-                Log.e("!!!", ras.references.toString() + viewModel.refList.value.toString())
-                i++
-            }
-
-            viewModel.refList.observe(this, Observer {
-                nav_view.menu.add(R.id.group123, i, Menu.NONE, "Ref $i")
+                nav_view.menu.add(R.id.group123, i, Menu.NONE, ras.references.ReferencesName)
                 nav_view.menu.setGroupEnabled(R.id.group123, true)
                 nav_view.menu.setQwertyMode(true)
                 nav_view.menu.setGroupCheckable(R.id.group123, true, true)
-                nav_view.setNavigationItemSelectedListener {
-                    viewModel.secList.value = viewModel.refAndSecList.value!![it.itemId-1].sections
-//                refViewModel.referencesId = 0
-                    navController.navigate(R.id.referencesFragment)
-                    it.isChecked = true;
-                    drawer.closeDrawers();
-                    true
-                }
-            })
-
+            }
+            nav_view.setNavigationItemSelectedListener {
+                Log.e("!!!", viewModel.refAndSecList.value.toString())
+                viewModel.secList.value = viewModel.refAndSecList.value!![it.itemId].sections
+                viewModel.referencesId = 0
+                navController.navigate(R.id.referencesFragment)
+                it.isChecked = true;
+                drawer.closeDrawers();
+                true
+            }
         })
+//    viewModel.secList.observe(this, Observer {
+//        database.referencesDao().deleteAllSections()
+//        for (sec in it)
+//        database.referencesDao().insertSection(sec)
+//    })
 //        viewModel.refAndSecList.value = mutableListOf()
-
+//    viewModel.refList.observe(this, Observer {
+//        nav_view.menu.clear()
+//        for ((i, ref) in viewModel.refList.value!!.withIndex()){
+//            Log.e("!!!", i.toString())
+//            nav_view.menu.add(R.id.group123, i, Menu.NONE, viewModel.refList.value!![i].ReferencesName)
+//            nav_view.menu.setGroupEnabled(R.id.group123, true)
+//            nav_view.menu.setQwertyMode(true)
+//            nav_view.menu.setGroupCheckable(R.id.group123, true, true)
+//            nav_view.setNavigationItemSelectedListener {
+//                viewModel.secList.value = viewModel.refAndSecList.value!![i-1].sections
+////                refViewModel.referencesId = 0
+//                navController.navigate(R.id.referencesFragment)
+//                it.isChecked = true;
+//                drawer.closeDrawers();
+//                true
+//            }
+//        }
+//    })
         //Navigation controller:
         navController = findNavController(R.id.nav_host)
 //        supportActionBar?.title = "12345"
@@ -116,12 +131,6 @@ class MainActivity : AppCompatActivity(){
          * delete -> удалить item из меню
          * */
         add.setOnClickListener(View.OnClickListener {
-//            Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
-//            nav_view.menu.add(R.id.group123, itemid, Menu.NONE, "Ref $itemid")
-//            nav_view.menu.setGroupEnabled(R.id.group123, true)
-//            nav_view.menu.setQwertyMode(true)
-//            nav_view.menu.setGroupCheckable(R.id.group123, true, true)
-//            nav_view.menu.setGroupDividerEnabled(true)
             //AddDB:
             Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
             database.referencesDao().insertReferences(References(id = itemid, "Ref $itemid"))
@@ -154,6 +163,14 @@ class MainActivity : AppCompatActivity(){
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item, navController)
+    }
+
+    override fun onPause() {
+        for (fas in viewModel.refAndSecList.value!!)
+            for (sec in fas.sections){
+                database.referencesDao().insertSection(sec)
+            }
+        super.onPause()
     }
 
 }
