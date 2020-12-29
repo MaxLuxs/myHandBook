@@ -27,7 +27,7 @@ class ReferencesFragment(/*val database: HandbookDatabase*/) : Fragment() {
 
     var sectionId = 0
     lateinit var adapter: SectionAdapter
-    lateinit var viewModel: ReferencesViewModel
+    lateinit var viewModel: MainViewModel
     lateinit var navController : NavController
 
     override fun onCreateView(
@@ -35,21 +35,20 @@ class ReferencesFragment(/*val database: HandbookDatabase*/) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 //        viewModel = ViewModelProvider(activity as MainActivity).get(MainViewModel::class.java)
-        viewModel = ViewModelProvider(activity as MainActivity).get(ReferencesViewModel::class.java)
+        viewModel = ViewModelProvider(activity as MainActivity).get(MainViewModel::class.java)
         Log.e("!!!", "Start!")
         return inflater.inflate(R.layout.references_fragment, container, false)
-
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        adapter = SectionAdapter(viewModel.list.value!!,navController, activity as MainActivity)
+        adapter = SectionAdapter(viewModel.secList.value!!,navController, activity as MainActivity)
         this.rcview.adapter = adapter
         this.rcview.layoutManager = LinearLayoutManager(context)
 //        viewModel.list.value = mutableListOf()
-        Log.e("!!!", "Section list: " + viewModel.list.value!!.toString() )
+        Log.e("!!!", "Section list: " + viewModel.secList.value!!.toString() )
 
         //update section id
 //        if (viewModel.list.value!!.isNotEmpty()){
@@ -66,7 +65,7 @@ class ReferencesFragment(/*val database: HandbookDatabase*/) : Fragment() {
             adapter.reload()
 
 
-        viewModel.list.observe(viewLifecycleOwner, Observer {
+        viewModel.secList.observe(viewLifecycleOwner, Observer {
 //            adapter.reload()
 //            Snackbar.make(view, "Добавлена новая скция", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()

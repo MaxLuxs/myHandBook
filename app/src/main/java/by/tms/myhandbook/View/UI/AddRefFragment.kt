@@ -37,10 +37,10 @@ class AddRefFragment : Fragment() {
         buttonAdd.setOnClickListener(View.OnClickListener {
             viewModel.refList.value!!.add(
                 References(
-                mutableListOf<Section>(),
                 viewModel.itemid,
                     nameRefEd.text.toString())
             )
+//            viewModel.refAndSecList.value.add(RefAndSec())
         })
 
         viewModel.refList.observe(viewLifecycleOwner, Observer {

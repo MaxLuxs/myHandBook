@@ -12,19 +12,19 @@ import androidx.navigation.fragment.findNavController
 import by.tms.myhandbook.R
 import by.tms.myhandbook.Section
 import by.tms.myhandbook.View.MainActivity
+import by.tms.myhandbook.ViewModel.MainViewModel
 import kotlinx.android.synthetic.main.add_section_fragment.*
 
 class addSection : Fragment() {
 
-    private lateinit var viewModel: ReferencesViewModel
+    private lateinit var viewModel: MainViewModel
     private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(activity as MainActivity).get(ReferencesViewModel::class.java)
-Log.e("!!!", viewModel.list.value.toString())
+        viewModel = ViewModelProvider(activity as MainActivity).get(MainViewModel::class.java)
         return inflater.inflate(R.layout.add_section_fragment, container, false)
     }
 
@@ -36,7 +36,8 @@ Log.e("!!!", viewModel.list.value.toString())
         navController = findNavController()
 
         button3.setOnClickListener(View.OnClickListener {
-            viewModel.list.value!!.add(Section(
+
+            viewModel.secList.value!!.add(Section(
                 viewModel.referencesId++,
                     textEd1.text.toString(),
                 textEd2.text.toString(),

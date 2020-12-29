@@ -6,16 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import by.tms.myhandbook.View.MainActivity
-import by.tms.myhandbook.View.UI.ReferencesViewModel
+import by.tms.myhandbook.ViewModel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_section.*
 
 /**
  * A simple [Fragment] subclass.
  */
 class SectionFragment : Fragment() {
-    lateinit var sectionViewModel: SectionViewModel
+    lateinit var sectionViewModel : MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -27,11 +26,10 @@ class SectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sectionViewModel = ViewModelProvider(activity as MainActivity).get(SectionViewModel::class.java)
+        sectionViewModel = ViewModelProvider(activity as MainActivity).get(MainViewModel::class.java)
         name.setText(sectionViewModel.section.value?.name)
         theme.setText(sectionViewModel.section.value?.theme)
         text.setText(sectionViewModel.section.value?.text)
-
     }
 
 

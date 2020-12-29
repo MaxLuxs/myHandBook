@@ -1,6 +1,5 @@
 package by.tms.myhandbook.View
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -8,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,10 +17,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
 import by.tms.myhandbook.Model.HandbookDatabase
+import by.tms.myhandbook.Model.RefAndSec
 import by.tms.myhandbook.Model.References
 import by.tms.myhandbook.R
-import by.tms.myhandbook.Section
-import by.tms.myhandbook.View.UI.ReferencesViewModel
 import by.tms.myhandbook.ViewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -35,10 +32,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(){
 
     private lateinit var viewModel: MainViewModel
-    lateinit var refViewModel: ReferencesViewModel
+//    lateinit var refViewModel: ReferencesViewModel
     lateinit var navController: NavController
 
-    var itemid = 0
+    private var itemid = 0
 
     private lateinit var database: HandbookDatabase
 
@@ -66,17 +63,46 @@ class MainActivity : AppCompatActivity(){
     ).allowMainThreadQueries()
         .build()
 
-        //
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        refViewModel = ViewModelProvider(this).get(ReferencesViewModel::class.java)
+//        refViewModel = ViewModelProvider(this).get(ReferencesViewModel::class.java)
 
-        viewModel.refList.observe(this, Observer {
-            Log.e("!!!", "new data")
-            for (references in viewModel.refList.value!!){
+        //db load:
+        viewModel.refAndSecList.value = database.referencesDao().getAllRefs()
+    Log.e("!!!", viewModel.refAndSecList.value.toString())
+    viewModel.refList.value = mutableListOf()
+    viewModel.secList.value = mutableListOf()
 
+        viewModel.refAndSecList.observe(this, Observer {
+            viewModel.itemid = viewModel.refAndSecList.value!!.size
+            itemid = viewModel.itemid
+            Log.e("!!!", itemid.toString())
+            var i = 0
+            for (ras in it){
+                Log.e("!!!", "1")
+
+                viewModel.secList.value = ras.sections
+                viewModel.refList.value?.add(ras.references)
+                Log.e("!!!", ras.references.toString() + viewModel.refList.value.toString())
+                i++
             }
+
+            viewModel.refList.observe(this, Observer {
+                nav_view.menu.add(R.id.group123, i, Menu.NONE, "Ref $i")
+                nav_view.menu.setGroupEnabled(R.id.group123, true)
+                nav_view.menu.setQwertyMode(true)
+                nav_view.menu.setGroupCheckable(R.id.group123, true, true)
+                nav_view.setNavigationItemSelectedListener {
+                    viewModel.secList.value = viewModel.refAndSecList.value!![it.itemId-1].sections
+//                refViewModel.referencesId = 0
+                    navController.navigate(R.id.referencesFragment)
+                    it.isChecked = true;
+                    drawer.closeDrawers();
+                    true
+                }
+            })
+
         })
-        viewModel.refList.value = mutableListOf()
+//        viewModel.refAndSecList.value = mutableListOf()
 
         //Navigation controller:
         navController = findNavController(R.id.nav_host)
@@ -85,42 +111,38 @@ class MainActivity : AppCompatActivity(){
         toolbar.setupWithNavController(navController, drawer)
         nav_view.setupWithNavController(navController)
 
-        /**ОЛбработка нажатий кнопок в меню дравера :
+        /**Обработка нажатий кнопок в меню дравера :
          * add -> добавить item в menu
          * delete -> удалить item из меню
          * */
         add.setOnClickListener(View.OnClickListener {
-            Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
-            nav_view.menu.add(R.id.group123, itemid, Menu.NONE, "Ref $itemid")
-            nav_view.menu.setGroupEnabled(R.id.group123, true)
-            nav_view.menu.setQwertyMode(true)
-            nav_view.menu.setGroupCheckable(R.id.group123, true, true)
+//            Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
+//            nav_view.menu.add(R.id.group123, itemid, Menu.NONE, "Ref $itemid")
+//            nav_view.menu.setGroupEnabled(R.id.group123, true)
+//            nav_view.menu.setQwertyMode(true)
+//            nav_view.menu.setGroupCheckable(R.id.group123, true, true)
 //            nav_view.menu.setGroupDividerEnabled(true)
             //AddDB:
-            database.referencesDao().insertReferences(References(mutableListOf<Section>(),itemid, "Ref $itemid"))
-            viewModel.refList.value!!.add(References(mutableListOf<Section>(),itemid, "Ref $itemid"))
-            Log.e("!!!", viewModel.refList.value!![itemid].sections.toString())
-            itemid = viewModel.refList.value!!.size
-            nav_view.setNavigationItemSelectedListener {
-                refViewModel.list.value = viewModel.refList.value!![it.itemId].sections
-                refViewModel.referencesId = 0
-                navController.navigate(R.id.referencesFragment)
-                it.isChecked = true;
-                drawer.closeDrawers();
-                true
-            }
-
+            Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
+            database.referencesDao().insertReferences(References(id = itemid, "Ref $itemid"))
+//            viewModel.refAndSecList.value!!.add(RefAndSec(References(itemid, "Ref $itemid"), mutableListOf()))
+            //
+            viewModel.refAndSecList.value = database.referencesDao().getAllRefs()
+            //
+            itemid = viewModel.refAndSecList.value!!.size
         })
         delete.setOnClickListener(View.OnClickListener {
             if (itemid >= 0){
                 Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show()
+                //
+                database.referencesDao().deleteReferencesById(itemid-1)
                 nav_view.menu.removeItem(itemid-1)
-                viewModel.refList.value!!.removeAt(itemid-1)
-                itemid = viewModel.refList.value!!.size
+                viewModel.refAndSecList.value!!.removeAt(itemid-1)
+                itemid = viewModel.refAndSecList.value!!.size
             }else{
                 Toast.makeText(this, "no item", Toast.LENGTH_SHORT).show()
             }
-            Log.e("!!!", viewModel.refList.value.toString())
+            Log.e("!!!", viewModel.refAndSecList.value.toString())
         })
 
     }

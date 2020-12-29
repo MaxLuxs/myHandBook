@@ -8,5 +8,5 @@ import by.tms.myhandbook.Section
 data class RefAndSec(
     @Embedded val references:References,
     @Relation(parentColumn = "id", entityColumn = "refId")
-    val sections:List<Section>
+    val sections: MutableList<Section>
 )

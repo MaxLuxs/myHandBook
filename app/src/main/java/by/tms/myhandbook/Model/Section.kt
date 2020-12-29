@@ -6,22 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.*
 import by.tms.myhandbook.View.MainActivity
-import by.tms.myhandbook.View.UI.ReferencesViewModel
+import by.tms.myhandbook.ViewModel.MainViewModel
 
 //Class:-----------------------------------------------------------------------
-@Entity(tableName = "section")
+@Entity(tableName = "sections")
 data class Section(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey val id: Int,
     var name: String,
     var theme: String,
     var text: String,
@@ -55,8 +51,7 @@ data class Section(
 //Adapter:------------------------------------------------------------------------------------------------------------------
 class SectionAdapter(private var sectionList: MutableList<Section>, val navController: NavController, val mainActivity: MainActivity) : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
 
-    lateinit var viewModel:ReferencesViewModel
-    lateinit var sectionViewModel: SectionViewModel
+    lateinit var viewModel:MainViewModel
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val nameTW: TextView = itemView.findViewById(R.id.name)
@@ -73,8 +68,7 @@ class SectionAdapter(private var sectionList: MutableList<Section>, val navContr
 
         itemView.setOnClickListener(View.OnClickListener {
             Log.e("!!!", "1")
-            viewModel = ViewModelProvider(mainActivity).get(ReferencesViewModel::class.java)
-            sectionViewModel = ViewModelProvider(mainActivity).get(SectionViewModel::class.java)
+            viewModel = ViewModelProvider(mainActivity).get(MainViewModel::class.java)
 
             val position = holder.adapterPosition
 //            Log.e("!!!", "1")
@@ -106,7 +100,7 @@ class SectionAdapter(private var sectionList: MutableList<Section>, val navContr
 //                }
 //            }
 //            ft.commit()
-            sectionViewModel.section.value = viewModel.list.value?.get(position)
+            viewModel.section.value = viewModel.secList.value?.get(position)
             navController.navigate(R.id.sectionFragment)
 
 //            notifyDataSetChanged()

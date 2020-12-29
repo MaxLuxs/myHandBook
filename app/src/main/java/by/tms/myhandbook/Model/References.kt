@@ -5,9 +5,7 @@ import by.tms.myhandbook.Section
 //
 @Entity(tableName = "refs")
 data class References(
-        val sections: MutableList<Section>,
-        @PrimaryKey
-        val id:Int,
+        @PrimaryKey val id:Int,
         val ReferencesName:String)
 
 //@Dao
