@@ -34,5 +34,7 @@ interface ReferencesDao {
     @Query("SELECT * FROM sections")
     fun getAllSections():MutableList<Section>
 
+    @Query("DELETE FROM sections WHERE id LIKE :id")
+    fun deleteSectionById(id: Int)
 
 }

@@ -7,4 +7,5 @@
         1.To add a section, go to the side menu (Swipe from right to left).
         Click the add or remove button.
         2. In order to add sections, select one of the sections and click on the plus sign.</string>
+    <string name="AddSecText">Enter a title, subject, and initial text. Then everything can be edited.</string>
 </resources>
