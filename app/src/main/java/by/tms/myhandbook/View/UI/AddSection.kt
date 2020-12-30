@@ -37,14 +37,18 @@ class addSection : Fragment() {
 
         button3.setOnClickListener(View.OnClickListener {
 
+
+            Log.e("!!!", viewModel.secId.toString())
             viewModel.secList.value!!.add(Section(
-                viewModel.referencesId++,
+                viewModel.secId++,
                     textEd1.text.toString(),
                 textEd2.text.toString(),
                 textEd3.text.toString(),
-                viewModel.referencesId
+                viewModel.selectRef
             ))
+            viewModel.db.value?.referencesDao()?.insertSection(viewModel.secList.value!!.last())
 //            Log.e("!!!", viewModel.list.value.toString())
+
             navController.popBackStack()
 //            activity?.onBackPressed()
 

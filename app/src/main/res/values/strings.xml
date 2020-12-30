@@ -3,4 +3,8 @@
     <string name="test">testtext</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="HelloText">Welcome to your directory.
+        1.To add a section, go to the side menu (Swipe from right to left).
+        Click the add or remove button.
+        2. In order to add sections, select one of the sections and click on the plus sign.</string>
 </resources>

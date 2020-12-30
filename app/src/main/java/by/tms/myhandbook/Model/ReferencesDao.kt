@@ -31,5 +31,8 @@ interface ReferencesDao {
     @Query("DELETE FROM refs WHERE id LIKE :id")
     fun deleteReferencesById(id : Int)
 
+    @Query("SELECT * FROM sections")
+    fun getAllSections():MutableList<Section>
+
 
 }

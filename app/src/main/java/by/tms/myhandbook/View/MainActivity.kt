@@ -27,24 +27,28 @@ import kotlinx.android.synthetic.main.activity_main.*
  * MyHandbook v 0.01
  * by Maksim Lukashevich
  * It`s dirty but it can live
+ *
+ * Надо:
+ * Настроить все id (section and references), сделать одни экземпляры во view model.
+ * Настроить liveData во viewModel.
+ * Удалить все лишнее.
+ *
+ * Добавить настройки в appbarmenu
+ * Настроить удаление
+ *
+ * [AppCompatActivity]
  * */
 
 class MainActivity : AppCompatActivity(){
 
     private lateinit var viewModel: MainViewModel
-//    lateinit var refViewModel: ReferencesViewModel
+
     lateinit var navController: NavController
 
     private var itemid = 0
 
     private lateinit var database: HandbookDatabase
 
-//    val database by lazy { Room.databaseBuilder(
-//        applicationContext,
-//        HandbookDatabase::class.java, "handb_db"
-//    ).allowMainThreadQueries().build() }
-
-//    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -52,33 +56,31 @@ class MainActivity : AppCompatActivity(){
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
     //database init:
-//    database = Room.databaseBuilder(
-//        applicationContext,
-//        HandbookDatabase::class.java,
-//        "handb_db",
-//    ).allowMainThreadQueries().build()
     database = Room.databaseBuilder(
         applicationContext,
         HandbookDatabase::class.java, "handook_db"
     ).allowMainThreadQueries()
         .build()
 
+        /**View model init : MainViewModel
+         * 1.Load all references
+         * 2.3.Create lists for ref and sec
+         * 4.Load db link in VM
+         * 5.Get last section ID
+         * 6.Set Observe -> Update drawer.menu and set navItemListener for menu item.
+         * */
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-//        refViewModel = ViewModelProvider(this).get(ReferencesViewModel::class.java)
-
-        //db load:
         viewModel.refAndSecList.value = database.referencesDao().getAllRefs()
-
         viewModel.refList.value = mutableListOf()
         viewModel.secList.value = mutableListOf()
-
-        viewModel.refAndSecList.observe(this, Observer {
+        viewModel.db.value = database
+        viewModel.secId = database.referencesDao().getAllSections().last().id + 1
+        viewModel.refAndSecList.observe(this, Observer { it ->
             nav_view.menu.clear()
             viewModel.itemid = viewModel.refAndSecList.value!!.size
             itemid = viewModel.itemid
-            Log.e("!!!", itemid.toString())
+            Log.e("!!!", viewModel.refAndSecList.value.toString())
             for ((i, ras) in it.withIndex()){
-//                viewModel.secList.value = ras.sections
                 viewModel.refList.value?.add(ras.references)
                 nav_view.menu.add(R.id.group123, i, Menu.NONE, ras.references.ReferencesName)
                 nav_view.menu.setGroupEnabled(R.id.group123, true)
@@ -89,61 +91,37 @@ class MainActivity : AppCompatActivity(){
                 Log.e("!!!", viewModel.refAndSecList.value.toString())
                 viewModel.secList.value = viewModel.refAndSecList.value!![it.itemId].sections
                 viewModel.referencesId = 0
+                viewModel.selectRef = it.itemId
                 navController.navigate(R.id.referencesFragment)
                 it.isChecked = true;
                 drawer.closeDrawers();
                 true
             }
         })
-//    viewModel.secList.observe(this, Observer {
-//        database.referencesDao().deleteAllSections()
-//        for (sec in it)
-//        database.referencesDao().insertSection(sec)
-//    })
-//        viewModel.refAndSecList.value = mutableListOf()
-//    viewModel.refList.observe(this, Observer {
-//        nav_view.menu.clear()
-//        for ((i, ref) in viewModel.refList.value!!.withIndex()){
-//            Log.e("!!!", i.toString())
-//            nav_view.menu.add(R.id.group123, i, Menu.NONE, viewModel.refList.value!![i].ReferencesName)
-//            nav_view.menu.setGroupEnabled(R.id.group123, true)
-//            nav_view.menu.setQwertyMode(true)
-//            nav_view.menu.setGroupCheckable(R.id.group123, true, true)
-//            nav_view.setNavigationItemSelectedListener {
-//                viewModel.secList.value = viewModel.refAndSecList.value!![i-1].sections
-////                refViewModel.referencesId = 0
-//                navController.navigate(R.id.referencesFragment)
-//                it.isChecked = true;
-//                drawer.closeDrawers();
-//                true
-//            }
-//        }
-//    })
-        //Navigation controller:
+
+        /**Navigation controller:
+         * nav_host -> graph
+         * */
         navController = findNavController(R.id.nav_host)
-//        supportActionBar?.title = "12345"
         setupActionBarWithNavController(navController, drawer)
         toolbar.setupWithNavController(navController, drawer)
         nav_view.setupWithNavController(navController)
 
-        /**Обработка нажатий кнопок в меню дравера :
-         * add -> добавить item в menu
-         * delete -> удалить item из меню
+        /**Listners for buttons in drawer menu :
+         * add -> add item to menu
+         * delete -> delete item
          * */
         add.setOnClickListener(View.OnClickListener {
             //AddDB:
             Toast.makeText(this, "add", Toast.LENGTH_SHORT).show()
             database.referencesDao().insertReferences(References(id = itemid, "Ref $itemid"))
-//            viewModel.refAndSecList.value!!.add(RefAndSec(References(itemid, "Ref $itemid"), mutableListOf()))
-            //
             viewModel.refAndSecList.value = database.referencesDao().getAllRefs()
-            //
             itemid = viewModel.refAndSecList.value!!.size
         })
         delete.setOnClickListener(View.OnClickListener {
+            Log.e("!!!", itemid.toString())
             if (itemid >= 0){
                 Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show()
-                //
                 database.referencesDao().deleteReferencesById(itemid-1)
                 nav_view.menu.removeItem(itemid-1)
                 viewModel.refAndSecList.value!!.removeAt(itemid-1)
@@ -151,7 +129,6 @@ class MainActivity : AppCompatActivity(){
             }else{
                 Toast.makeText(this, "no item", Toast.LENGTH_SHORT).show()
             }
-            Log.e("!!!", viewModel.refAndSecList.value.toString())
         })
 
     }
@@ -163,14 +140,6 @@ class MainActivity : AppCompatActivity(){
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item, navController)
-    }
-
-    override fun onPause() {
-        for (fas in viewModel.refAndSecList.value!!)
-            for (sec in fas.sections){
-                database.referencesDao().insertSection(sec)
-            }
-        super.onPause()
     }
 
 }

@@ -3,6 +3,7 @@ package by.tms.myhandbook.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.room.RoomDatabase
+import by.tms.myhandbook.Model.HandbookDatabase
 import by.tms.myhandbook.Model.RefAndSec
 import by.tms.myhandbook.Model.References
 import by.tms.myhandbook.Section
@@ -32,6 +33,13 @@ class MainViewModel() : ViewModel() {
     val section: MutableLiveData<Section> by lazy {
         MutableLiveData<Section>()
     }
+
+    val db: MutableLiveData<HandbookDatabase> by lazy {
+        MutableLiveData<HandbookDatabase>()
+    }
+
+    var selectRef = 0
+    var secId = 0
 
 
 }
